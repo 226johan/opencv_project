@@ -1,5 +1,6 @@
 #pragma once
-
+#ifndef CONFIG_H
+#define CONFIG_H
 /**
 *	@file config.h
 *	@brief 宏定义，标头模块
@@ -25,5 +26,7 @@ using namespace std;
 
 #define IMG_FILE_NAME "lena.jpg"
 #define VIDEO_FILE_NAME "vtest.avi"
-#define MODEL_FILE_NAME ""
-#define LABEL_FILE_NAME ""
+#define MODEL_FILE_NAME "yolov8n-seg.onnx"
+#define LABEL_FILE_NAME "classes.txt"
+
+#endif

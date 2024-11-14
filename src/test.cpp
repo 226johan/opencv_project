@@ -1,5 +1,5 @@
 #include"test.h"
-#include"video_analytics.h"
+
 
 void opencv_test() {
 	namedWindow("frame", WINDOW_AUTOSIZE);
@@ -34,16 +34,33 @@ void opencv_cuda_test() {
 }
 
 void VideoAnalytics_VideoPlay_test() {
-	VideoAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
+	//VideoAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
+	VideoAnalytics video(VIDEO_FILE VIDEO_FILE_NAME);
 	video.VideoPlay();
 }
 
 void BackGraundAnalytics_VideoaNalyse_test() {
-	BackGraundAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
+	BackGraundAnalytics video(VIDEO_FILE VIDEO_FILE_NAME);
+	//BackGraundAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
 	video.VideoaNalyse();
 }
 
 void OpticalFlowAnalytics_VideoaNalyse_test() {
-	OpticalFlowAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
+	//OpticalFlowAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
+	OpticalFlowAnalytics video(VIDEO_FILE VIDEO_FILE_NAME);
 	video.VideoaNalyse();
+}
+
+void ObjDetect_yolov8_VideoObjDetect_test() {
+	ObjDetect_yolov8 obj(VIDEO_FILE VIDEO_FILE_NAME, MODEL_FILE MODEL_FILE_NAME, LABEL_FILE LABEL_FILE_NAME);
+	//obj.VideoPlay();
+	obj.VideoObjDetect();
+}
+
+void LabelObj_ClassseGet_test() {
+	//LabelObj file(LABEL_FILE LABEL_FILE_NAME);
+	LabelObj file;
+	file.FileRead(LABEL_FILE LABEL_FILE_NAME);
+	vector<string> classes = file.ClassseGet();
+	cout << classes[3] << endl;
 }
