@@ -36,7 +36,7 @@ void VideoAnalytics::VideoPlay()
 
 
 
-void BackGraundAnalytics::VideoaNalyse() {
+void BackGraundAnalytics::VideoNalyse() {
 	auto mog = cuda::createBackgroundSubtractorMOG2();
 	Mat frame;
 	// 图像 前景 背景
@@ -95,7 +95,7 @@ void BackGraundAnalytics::VideoaNalyse() {
 }
 
 
-void OpticalFlowAnalytics::VideoaNalyse() {
+void OpticalFlowAnalytics::VideoNalyse() {
 	auto farn = cuda::FarnebackOpticalFlow::create();
 
 	if (!video_.isOpened()) { video_.open(video_name_); }
@@ -254,7 +254,7 @@ void ObjDetect_yolov8::VideoObjDetect()
 				cv::minMaxLoc(classes_scores, 0, &score, 0, &classIdPoint);
 
 				// 置信度 0～1之间
-				if (score > 0.25)
+				if (score > 0.35)
 				{
 					float cx = det_output.at<float>(i, 0);
 					float cy = det_output.at<float>(i, 1);

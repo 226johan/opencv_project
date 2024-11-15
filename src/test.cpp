@@ -34,21 +34,21 @@ void opencv_cuda_test() {
 }
 
 void VideoAnalytics_VideoPlay_test() {
-	//VideoAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
-	VideoAnalytics video(VIDEO_FILE VIDEO_FILE_NAME);
+	VideoAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
+	//VideoAnalytics video(VIDEO_FILE VIDEO_FILE_NAME);
 	video.VideoPlay();
 }
 
 void BackGraundAnalytics_VideoaNalyse_test() {
 	BackGraundAnalytics video(VIDEO_FILE VIDEO_FILE_NAME);
 	//BackGraundAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
-	video.VideoaNalyse();
+	video.VideoNalyse();
 }
 
 void OpticalFlowAnalytics_VideoaNalyse_test() {
 	//OpticalFlowAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
 	OpticalFlowAnalytics video(VIDEO_FILE VIDEO_FILE_NAME);
-	video.VideoaNalyse();
+	video.VideoNalyse();
 }
 
 void ObjDetect_yolov8_VideoObjDetect_test() {
@@ -63,4 +63,29 @@ void LabelObj_ClassseGet_test() {
 	file.FileRead(LABEL_FILE LABEL_FILE_NAME);
 	vector<string> classes = file.ClassseGet();
 	cout << classes[3] << endl;
+}
+
+
+void ImageAnalytics_ImagePlay_test()
+{
+	//ImageAnalytics img_obj(IMG_FILE IMG_FILE_NAME);
+	//ImageAnalytics img_obj(imread(IMG_FILE IMG_FILE_NAME));
+	GpuMat img(imread(IMG_FILE IMG_FILE_NAME));
+	ImageAnalytics img_obj(img);
+	//ImageAnalytics img_obj;
+	//img_obj.ImageGet(IMG_FILE IMG_FILE_NAME);
+	//img_obj.ImageGet(imread(IMG_FILE IMG_FILE_NAME));
+	//GpuMat img(imread(IMG_FILE IMG_FILE_NAME));
+	//img_obj.ImageGet(img);
+	img_obj.ImagePlay();
+}
+
+void ImageFeatureMatch_ImagePlay_test() {
+	ImageFeatureMatch img_obj(IMG_FILE IMG_FILE_NAME);
+	img_obj.ImagePlay();
+}
+
+void ImageAnalytics_ImageNalyse_test() {
+	ImageFeatureMatch img_obj(IMG_FILE "box.png");
+	img_obj.ImageNalyse();
 }

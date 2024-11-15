@@ -12,6 +12,49 @@
 *	@data 2024.11.14
 */
 
+// video analytics template
+/*****************************************************************************************
+	Mat frame_host;																		
+	GpuMat frame;
+	namedWindow("video", WINDOW_AUTOSIZE);
+	bool ifPuase = false;
+	bool ifPlay = true;
+	if (!video_.isOpened()) { video_.open(video_name_); }
+	while (ifPlay) {
+		if (!ifPuase) {
+			int64 start = getTickCount();
+			bool ret = video_.read(frame_host);
+			if (!ret) break;
+			frame_host.upload(frame);
+
+// ********************************* your code start *************************************
+
+
+// ********************************* your code end ***************************************
+			int64 end = getTickCount();
+			double fps = getTickFrequency() / (end - start);
+			putText(frame_host, format("FPS: %.2f", fps), Point(50, 50), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 255), 2, 8);
+			imshow("video", frame_host);
+		}
+		char key = waitKey(1);
+		switch (key)
+		{
+		case ' ':
+			ifPuase = !ifPuase;
+			break;
+		case 27:
+			ifPlay = false;
+			break;
+		case 'q':
+			ifPlay = false;
+			break;
+		}
+	}
+******************************************************************************************/
+
+
+
+
 #include"config.h"
 #include <opencv2/cudabgsegm.hpp>  // 背景法
 #include <opencv2/cudaoptflow.hpp> // 光流法
@@ -65,7 +108,7 @@ public:
 	const VideoCapture VideoGet(const VideoCapture& video) { return video; }
 	const string VideoGet(const string video_name) { video_name_ = video_name; return video_name_; }
 	void VideoPlay();
-	virtual void VideoaNalyse() {};
+	virtual void VideoNalyse() {};
 	virtual void VideoObjDetect() {};
 	virtual ~VideoAnalytics() = default;
 
@@ -76,6 +119,8 @@ public:
 
 };
 
+
+// todolists.   VideoNalyse() 加入顶帽算法优化
 class BackGraundAnalytics : public VideoAnalytics{
 public:
 	BackGraundAnalytics() = default;
@@ -92,7 +137,7 @@ public:
 	}
 
 	~BackGraundAnalytics() = default;
-	void VideoaNalyse();
+	void VideoNalyse();
 };
 
 class OpticalFlowAnalytics : public VideoAnalytics {
@@ -111,7 +156,7 @@ public:
 	}
 
 	~OpticalFlowAnalytics() = default;
-	void VideoaNalyse();
+	void VideoNalyse();
 };
 
 class ObjDetect_yolov8 : public VideoAnalytics {

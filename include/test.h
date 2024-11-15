@@ -5,7 +5,7 @@
 
 /**
 *	@file test.h 
-*	@brief opencv 运行环境测试模块
+*	@brief 代码测试模块
 *	Datails.
 *	
 *	@author johan
@@ -15,6 +15,7 @@
 #include"config.h"
 #include"video_analytics.h"
 #include"label_read.h"
+#include"image_analytics.h"
 /**
 *	@brief opencv
 */
@@ -52,8 +53,20 @@ void ObjDetect_yolov8_VideoObjDetect_test();
 
 void LabelObj_ClassseGet_test();
 
+/**
+*	@brief image_analytics.h ImageAnalytics::ImagePlay
+*/
 
+void ImageAnalytics_ImagePlay_test();
 
+/**
+*	@brief image_analytics.h ImageFeatureMatch::ImagePlay
+*/
+void ImageFeatureMatch_ImagePlay_test();
 
+/**
+*	@brief image_analytics.h ImageFeatureMatch::ImageNalyse
+*/
+void ImageAnalytics_ImageNalyse_test();
 
 #endif // !TEST_H_
