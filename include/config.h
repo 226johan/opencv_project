@@ -3,7 +3,7 @@
 #define CONFIG_H
 /**
 *	@file config.h
-*	@brief 宏定义，标头模块
+*	@brief 宏定义，标头
 *	Datails.
 *
 *	@author johan

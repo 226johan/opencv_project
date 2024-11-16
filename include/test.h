@@ -5,7 +5,7 @@
 
 /**
 *	@file test.h 
-*	@brief 代码测试模块
+*	@brief 对象功能测试
 *	Datails.
 *	
 *	@author johan
@@ -42,10 +42,19 @@ void BackGraundAnalytics_VideoaNalyse_test();
 void OpticalFlowAnalytics_VideoaNalyse_test();
 
 /**
+*	@brief video_analytics.h OpticalFlowAnalytics::VideoaNalyse
+*/
+void HogAnalytics_VideoaNalyse_test();
+
+/**
 *	@brief video_analytics.h ObjDetect_yolov8::VideoObjDetect
 */
 void ObjDetect_yolov8_VideoObjDetect_test();
 
+/**
+*	@brief video_analytics.h ObjDetect_yolov5::VideoObjDetect
+*/
+void ObjDetect_yolov5_VideoObjDetect_test();
 
 /**
 *	@brief label_read.h LabelObj::ClassseGet
@@ -68,5 +77,10 @@ void ImageFeatureMatch_ImagePlay_test();
 *	@brief image_analytics.h ImageFeatureMatch::ImageNalyse
 */
 void ImageAnalytics_ImageNalyse_test();
+
+/**
+*	@brief image_analytics.h ImageClassification::ImageNalyse
+*/
+void ImageClassification_ImageNalyse_test();
 
 #endif // !TEST_H_

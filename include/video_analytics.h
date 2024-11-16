@@ -58,6 +58,7 @@
 #include"config.h"
 #include <opencv2/cudabgsegm.hpp>  // 背景法
 #include <opencv2/cudaoptflow.hpp> // 光流法
+#include <opencv2/cudaobjdetect.hpp> // HOG
 #include <opencv2/cudaarithm.hpp>	// cuda::split cuda::cartToPolar
 #include "label_read.h"
 
@@ -159,6 +160,26 @@ public:
 	void VideoNalyse();
 };
 
+class HogAnalytics : public VideoAnalytics {
+public:
+	HogAnalytics() = default;
+	explicit HogAnalytics(const VideoCapture video) : VideoAnalytics(video) {
+		if (!video_.isOpened()) {
+			throw std::runtime_error("Error: Could not open video.");
+		}
+	}
+
+	explicit HogAnalytics(const string video_name) : VideoAnalytics(video_name) {
+		if (video_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty video file");
+		}
+	}
+
+	~HogAnalytics() = default;
+	void VideoNalyse();
+};
+
+
 class ObjDetect_yolov8 : public VideoAnalytics {
 public:
 	ObjDetect_yolov8() = default;
@@ -201,6 +222,54 @@ public:
 
 	void VideoObjDetect();
 	~ObjDetect_yolov8() = default;
+
+private:
+	LabelObj label_obj_;
+	bool use_cuda_;
+};
+
+class ObjDetect_yolov5 : public VideoAnalytics {
+public:
+	ObjDetect_yolov5() = default;
+	explicit ObjDetect_yolov5(const VideoCapture video) : VideoAnalytics(video) {
+		if (!video_.isOpened()) {
+			throw std::runtime_error("Error: Could not open video.");
+		}
+	}
+
+	explicit ObjDetect_yolov5(const string video_name) : VideoAnalytics(video_name) {
+		if (video_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty video file");
+		}
+	}
+
+	explicit ObjDetect_yolov5(const VideoCapture& video, const string model_name, const string label_name, bool use_cuda = true) :VideoAnalytics(video, model_name, label_name), use_cuda_(use_cuda) {
+		if (!video_.isOpened()) {
+			throw std::runtime_error("Error: Could not open video.");
+		}
+		if (label_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty label file");
+		}
+		if (model_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty model file");
+		}
+	}
+
+	explicit ObjDetect_yolov5(const string video_name, const string model_name, const string label_name, bool use_cuda = true) :VideoAnalytics(video_name, model_name, label_name), use_cuda_(use_cuda) {
+		if (video_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty video file");
+		}
+		if (label_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty label file");
+		}
+		if (model_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty model file");
+		}
+	}
+
+
+	void VideoObjDetect();
+	~ObjDetect_yolov5() = default;
 
 private:
 	LabelObj label_obj_;

@@ -43,6 +43,7 @@
 // todolists. 添加多张图片读取处理功能
 
 #include"config.h"
+#include"label_read.h"
 #include <opencv2/cudafeatures2d.hpp> // orb特征子
 class ImageAnalytics {
 public:
@@ -73,8 +74,8 @@ public:
 
 	explicit ImageAnalytics(const string image_name, const string model_name, const string label_name) :
 		image_name_(image_name), model_name_(model_name), label_name_(label_name) {
-		if (image_host_.empty()) {
-			throw std::runtime_error("Error: empty image_host");
+		if (image_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty image file");
 		}
 		if (label_name_.c_str() == nullptr) {
 			throw std::runtime_error("Error: empty label file");
@@ -84,24 +85,11 @@ public:
 		}
 		image_host_ = imread(image_name);
 		image_.upload(image_host_);
+		
 	}
 
 	explicit ImageAnalytics(const GpuMat& image, const string model_name, const string label_name) :
 		image_(image), model_name_(model_name), label_name_(label_name) {
-		if (image_host_.empty()) {
-			throw std::runtime_error("Error: empty image_host");
-		}
-		if (label_name_.c_str() == nullptr) {
-			throw std::runtime_error("Error: empty label file");
-		}
-		if (model_name_.c_str() == nullptr) {
-			throw std::runtime_error("Error: empty model file");
-		}
-		image_.upload(image_host_);
-	}
-
-	explicit ImageAnalytics(const Mat& image_host, const string model_name, const string label_name) :
-		image_host_(image_host), model_name_(model_name), label_name_(label_name) {
 		if (image_.empty()) {
 			throw std::runtime_error("Error: empty image");
 		}
@@ -112,6 +100,22 @@ public:
 			throw std::runtime_error("Error: empty model file");
 		}
 		image_.download(image_host_);
+		
+	}
+
+	explicit ImageAnalytics(const Mat& image_host, const string model_name, const string label_name) :
+		image_host_(image_host), model_name_(model_name), label_name_(label_name) {
+		if (image_host_.empty()) {
+			throw std::runtime_error("Error: empty image_host");
+		}
+		if (label_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty label file");
+		}
+		if (model_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty model file");
+		}
+		image_.upload(image_host_);
+		
 	}
 
 
@@ -129,6 +133,7 @@ public:
 	string label_name_;
 	Mat image_host_;
 	GpuMat image_;
+
 };
 
 
@@ -162,8 +167,8 @@ public:
 
 	explicit ImageFeatureMatch(const string image_name, const string model_name, const string label_name) :
 		ImageAnalytics(image_name,model_name,label_name) {
-		if (image_host_.empty()) {
-			throw std::runtime_error("Error: empty image_host");
+		if (image_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty image file");
 		}
 		if (label_name_.c_str() == nullptr) {
 			throw std::runtime_error("Error: empty label file");
@@ -173,24 +178,11 @@ public:
 		}
 		image_host_ = imread(image_name);
 		image_.upload(image_host_);
+		label_obj_.FileRead(label_name_);
 	}
 
 	explicit ImageFeatureMatch(const GpuMat& image, const string model_name, const string label_name) :
 		ImageAnalytics(image,model_name,label_name) {
-		if (image_host_.empty()) {
-			throw std::runtime_error("Error: empty image_host");
-		}
-		if (label_name_.c_str() == nullptr) {
-			throw std::runtime_error("Error: empty label file");
-		}
-		if (model_name_.c_str() == nullptr) {
-			throw std::runtime_error("Error: empty model file");
-		}
-		image_.upload(image_host_);
-	}
-
-	explicit ImageFeatureMatch(const Mat& image_host, const string model_name, const string label_name) :
-		ImageAnalytics(image_host, model_name, label_name) {
 		if (image_.empty()) {
 			throw std::runtime_error("Error: empty image");
 		}
@@ -201,17 +193,111 @@ public:
 			throw std::runtime_error("Error: empty model file");
 		}
 		image_.download(image_host_);
+		label_obj_.FileRead(label_name_);
 	}
 
+	explicit ImageFeatureMatch(const Mat& image_host, const string model_name, const string label_name) :
+		ImageAnalytics(image_host, model_name, label_name) {
+		if (image_host_.empty()) {
+			throw std::runtime_error("Error: empty image_host");
+		}
+		if (label_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty label file");
+		}
+		if (model_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty model file");
+		}
+		image_.upload(image_host_);
+		label_obj_.FileRead(label_name_);
+	}
 
+	LabelObj label_obj_;
 	void ImageNalyse();
 
 	~ImageFeatureMatch() = default;
-
-
 };
 
+class ImageClassification : public ImageAnalytics {
+public:
+	ImageClassification() = default;
 
+	explicit ImageClassification(const string image_name) : ImageAnalytics(image_name) {
+		if (image_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty image file");
+		}
+		image_host_ = imread(image_name);
+		image_.upload(image_host_);
+	}
+
+	explicit ImageClassification(const Mat& image_host) : ImageAnalytics(image_host) {
+		if (image_host_.empty()) {
+			throw std::runtime_error("Error: empty image_host");
+		}
+		image_.upload(image_host_);
+	}
+
+	explicit ImageClassification(const GpuMat& image) : ImageAnalytics(image) {
+		if (image_.empty()) {
+			throw std::runtime_error("Error: empty image");
+		}
+		image_.download(image_host_);
+	}
+
+
+	explicit ImageClassification(const string image_name, const string model_name, const string label_name,bool use_cuda=true) :
+		ImageAnalytics(image_name, model_name, label_name), use_cuda_(use_cuda) {
+		if (image_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty image file");
+		}
+		if (label_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty label file");
+		}
+		if (model_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty model file");
+		}
+		image_host_ = imread(image_name);
+		image_.upload(image_host_);
+		label_obj_.FileRead(label_name_);
+	}
+
+	explicit ImageClassification(const GpuMat& image, const string model_name, const string label_name, bool use_cuda = true) :
+		ImageAnalytics(image, model_name, label_name), use_cuda_(use_cuda) {
+		if (image_.empty()) {
+			throw std::runtime_error("Error: empty image");
+		}
+		if (label_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty label file");
+		}
+		if (model_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty model file");
+		}
+		image_.download(image_host_);
+		label_obj_.FileRead(label_name_);
+	}
+
+	explicit ImageClassification(const Mat& image_host, const string model_name, const string label_name, bool use_cuda = true) :
+		ImageAnalytics(image_host, model_name, label_name), use_cuda_(use_cuda) {
+		if (image_host_.empty()) {
+			throw std::runtime_error("Error: empty image_host");
+		}
+		if (label_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty label file");
+		}
+		if (model_name_.c_str() == nullptr) {
+			throw std::runtime_error("Error: empty model file");
+		}
+		image_.upload(image_host_);
+		label_obj_.FileRead(label_name_);
+	}
+
+	LabelObj label_obj_;
+	bool use_cuda_;
+
+	// model must use resnet18
+	void ImageNalyse();
+
+	~ImageClassification() = default;
+};
 
 
 #endif // !IMAGE_ANALYTICS_H

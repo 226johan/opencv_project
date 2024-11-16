@@ -42,12 +42,12 @@ void ImageAnalytics::ImagePlay() {
 }
 
 void ImageFeatureMatch::ImageNalyse() {
-	namedWindow("Good Matches & Object detection");
-	Mat object_image = imread(IMG_FILE "box_in_scene.png");
-	Mat scene_image = image_host_.clone();
-	Mat h_image_result;
+		namedWindow("Good Matches & Object detection");
+		Mat object_image = imread(IMG_FILE "box_in_scene.png");
+		Mat scene_image = image_host_.clone();
+		Mat h_image_result;
 		int64 start = getTickCount();
-		// ********************************* your code start *************************************
+
 		// image upload
 		GpuMat d_scene_image = image_.clone();
 		GpuMat d_object_image(object_image);
@@ -112,7 +112,7 @@ void ImageFeatureMatch::ImageNalyse() {
 		corners[3] = Point(0, object_image.rows);
 		perspectiveTransform(corners, scene_corners, Homo);
 
-		// ********************************* your code end ***************************************
+
 		int64 end = getTickCount();
 		double runtime = getTickFrequency() / (end - start);
 
@@ -124,5 +124,44 @@ void ImageFeatureMatch::ImageNalyse() {
 		putText(h_image_result, format("runtime: %.2f", 1000), Point(50, 50), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 255), 2, 8);
 		imshow("Good Matches & Object detection", h_image_result);
 		waitKey(0);
+		destroyAllWindows();
+}
 
+
+
+void ImageClassification::ImageNalyse() {
+	namedWindow("img");
+	cv::dnn::Net net = cv::dnn::readNetFromONNX(model_name_);
+
+	if (use_cuda_) {
+		net.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);
+		net.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
+	}
+	else {
+		net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
+		net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
+	}
+
+	// pre-precess for image
+	cv::Mat rgb, blob;
+	cv::cvtColor(image_host_, rgb, cv::COLOR_BGR2RGB);
+	cv::resize(rgb, blob, cv::Size(224, 224));
+	blob.convertTo(blob, CV_32F);
+	blob = blob / 255.0;
+	cv::subtract(blob, cv::Scalar(0.485, 0.456, 0.406), blob);
+	cv::divide(blob, cv::Scalar(0.229, 0.224, 0.225), blob);
+	auto input_blob = cv::dnn::blobFromImage(blob);
+
+	net.setInput(input_blob);
+	cv::Mat prob = net.forward();
+
+	cv::Mat probMat = prob.reshape(1, 1);
+	cv::Point maxLoc;
+	double score;
+	cv::minMaxLoc(probMat, NULL, &score, NULL, &maxLoc);
+
+	std::cout << "score: " << score << " class text : " << label_obj_.classes_names_[maxLoc.x] << std::endl;
+	imshow("img", image_host_);
+	waitKey(0);
+	destroyAllWindows();
 }

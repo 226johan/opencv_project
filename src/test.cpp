@@ -48,7 +48,15 @@ void BackGraundAnalytics_VideoaNalyse_test() {
 void OpticalFlowAnalytics_VideoaNalyse_test() {
 	//OpticalFlowAnalytics video(VideoCapture(VIDEO_FILE VIDEO_FILE_NAME));
 	OpticalFlowAnalytics video(VIDEO_FILE VIDEO_FILE_NAME);
+	//video.VideoNalyse();
+	video.VideoPlay();
+
+}
+
+void HogAnalytics_VideoaNalyse_test() {
+	HogAnalytics video(VIDEO_FILE VIDEO_FILE_NAME);
 	video.VideoNalyse();
+	//video.VideoPlay();
 }
 
 void ObjDetect_yolov8_VideoObjDetect_test() {
@@ -56,6 +64,15 @@ void ObjDetect_yolov8_VideoObjDetect_test() {
 	//obj.VideoPlay();
 	obj.VideoObjDetect();
 }
+
+void ObjDetect_yolov5_VideoObjDetect_test() {
+	ObjDetect_yolov5 obj(VIDEO_FILE "Pexels_Videos_2670.mp4", MODEL_FILE "yolov5s.onnx", LABEL_FILE LABEL_FILE_NAME);
+	//ObjDetect_yolov5 obj(VIDEO_FILE "vtest.avi", MODEL_FILE "yolov5s.onnx", LABEL_FILE LABEL_FILE_NAME);
+	//obj.VideoPlay();
+	obj.VideoObjDetect();
+}
+
+
 
 void LabelObj_ClassseGet_test() {
 	//LabelObj file(LABEL_FILE LABEL_FILE_NAME);
@@ -87,5 +104,10 @@ void ImageFeatureMatch_ImagePlay_test() {
 
 void ImageAnalytics_ImageNalyse_test() {
 	ImageFeatureMatch img_obj(IMG_FILE "box.png");
+	img_obj.ImageNalyse();
+}
+
+void ImageClassification_ImageNalyse_test() {
+	ImageClassification img_obj(IMG_FILE "messi.jpg", MODEL_FILE "resnet18.onnx", LABEL_FILE "imagenet_classes.txt");
 	img_obj.ImageNalyse();
 }
